@@ -1,0 +1,15 @@
+public PlanModel PlanInfo{ get; set; }
+        public PlanViewModel(PlanSetup planSetup)
+        {
+            PlanInfo = new PlanModel
+            {
+                Id = planSetup.Id,
+                Name = planSetup.Name,
+                CourseId = planSetup.Course.Id,
+                ApprovalStatus = planSetup.ApprovalStatus.ToString(),
+                Approver = planSetup.ApprovalHistory.Last().UserDisplayName,
+                ApprovalHistory = String.Join("\n", planSetup.ApprovalHistory
+                .Select(x => new { s = $"{x.ApprovalStatus} -  {x.ApprovalDateTime} by {x.UserId}" }).Select(x => x.s))
+            };
+            //select statement has an anonymous type inside that is the approval status, dat and user. 
+        }
