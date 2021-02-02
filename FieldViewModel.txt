@@ -1,0 +1,59 @@
+public ObservableCollection<FieldModel> Fields { get; set; }
+        private FieldModel _selectedField;
+
+        public FieldModel SelectedField
+        {
+            get { return _selectedField; }
+            set { SetProperty(ref _selectedField, value); }
+        }
+        public FieldViewModel(PlanSetup planSetup)
+        {
+            Fields = new ObservableCollection<FieldModel>();
+            GatherFieldInfo(planSetup);
+        }
+
+        private void GatherFieldInfo(PlanSetup planSetup)
+        {
+            foreach (var field in planSetup.Beams.Where(x => !x.IsSetupField).OrderBy(x => x.BeamNumber))
+            {
+                Fields.Add(new FieldModel
+                {
+                    FieldId = field.Id,
+                    FieldName = field.Name,
+                    Technique = field.Technique.Id,
+                    Energy = field.EnergyModeDisplayName,
+                    FieldX = (field.ControlPoints.Max(x => x.JawPositions.X2) - field.ControlPoints.Min(x => x.JawPositions.X1)) / 10.0,
+                    FieldY = (field.ControlPoints.Max(x => x.JawPositions.Y2) - field.ControlPoints.Min(x => x.JawPositions.Y1)) / 10.0,
+                    X1 = field.ControlPoints.Min(x => x.JawPositions.X1) / 10.0,
+                    X2 = field.ControlPoints.Max(x => x.JawPositions.X2) / 10.0,
+                    Y1 = field.ControlPoints.Min(x => x.JawPositions.Y1) / 10.0,
+                    Y2 = field.ControlPoints.Max(x => x.JawPositions.Y2) / 10.0,
+                    Machine = field.TreatmentUnit.Id,
+                    Isocenter = GetIsocenter(field),
+                    MU = field.Meterset.Value,
+                    MLCPlanType = field.MLCPlanType.ToString(),
+                    SSD = field.SSD,//maybe for arcs average ssd would be the best.
+                    DoseRate = field.DoseRate,
+                    Gantry = GetGantry(field),
+                    Collimator = field.CollimatorAngleToUser(field.ControlPoints.First().CollimatorAngle),
+                    CouchAngle = field.PatientSupportAngleToUser(field.ControlPoints.First().PatientSupportAngle),
+                    ToleranceTable = field.ToleranceTableLabel,
+                    DRR = BuildDRRImage(field)
+                });
+            }
+        }
+
+        private BitmapSource BuildDRRImage(Beam field)
+        {
+            throw new NotImplementedException();
+        }
+
+        private double GetGantry(Beam field)
+        {
+            throw new NotImplementedException();
+        }
+
+        private string GetIsocenter(Beam field)
+        {
+            throw new NotImplementedException();
+        }
