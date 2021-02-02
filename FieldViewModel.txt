@@ -29,7 +29,7 @@ public ObservableCollection<FieldModel> Fields { get; set; }
                     Y1 = field.ControlPoints.Min(x => x.JawPositions.Y1) / 10.0,
                     Y2 = field.ControlPoints.Max(x => x.JawPositions.Y2) / 10.0,
                     Machine = field.TreatmentUnit.Id,
-                    Isocenter = GetIsocenter(field),
+                    Isocenter = GetIsocenter(planSetup,field),
                     MU = field.Meterset.Value,
                     MLCPlanType = field.MLCPlanType.ToString(),
                     SSD = field.SSD,//maybe for arcs average ssd would be the best.
@@ -45,15 +45,45 @@ public ObservableCollection<FieldModel> Fields { get; set; }
 
         private BitmapSource BuildDRRImage(Beam field)
         {
-            throw new NotImplementedException();
+            var drr = field.ReferenceImage;
+            int[,] pixels = new int[drr.YSize, drr.XSize];
+            drr.GetVoxels(0,pixels);//get image pixels out of ESAPI.
+            int[] flat_pixels = new int[drr.YSize * drr.XSize];
+            //lay out pixels into single array
+            for(int i = 0; i < drr.YSize; i++)
+            {
+                for(int ii = 0; ii < drr.XSize; ii++)
+                {
+                    flat_pixels[i + drr.XSize * ii] = pixels[ii,i];
+                }
+            }
+            //translate into byte array
+            var drr_max = flat_pixels.Max();
+            var drr_min = flat_pixels.Min();
+            PixelFormat format = PixelFormats.Gray8;//low res image, but only 1 byte per pixel. 
+            int stride = (drr.XSize * format.BitsPerPixel + 7) / 8;
+            byte[] image_bytes = new byte[stride * drr.YSize];
+            for(int i = 0; i < flat_pixels.Length; i++)
+            {
+                double value = flat_pixels[i];
+                image_bytes[i] = Convert.ToByte(255 * ((value - drr_min) / (drr_max - drr_min)));
+            }
+            //build the bitmapsource.
+            return BitmapSource.Create(drr.XSize, drr.YSize, 25.4 / drr.XRes, 25.4 / drr.YRes, format, null, image_bytes, stride);
         }
 
-        private double GetGantry(Beam field)
+        private string GetGantry(Beam field)
         {
-            throw new NotImplementedException();
+            if (field.Technique.Id.Contains("ARC"))
+            {
+                return $"{field.ControlPoints.First().GantryAngle} {field.GantryDirection} {field.ControlPoints.Last().GantryAngle}";
+            }
+            return field.ControlPoints.First().GantryAngle.ToString();
         }
 
-        private string GetIsocenter(Beam field)
+        private string GetIsocenter(PlanSetup plan, Beam field)
         {
-            throw new NotImplementedException();
+            var uo = plan.StructureSet.Image.UserOrigin;
+            var iso = field.IsocenterPosition;
+            return $"({(uo.x - iso.x) / 10.0}, {(uo.y - iso.y) / 10.0}, {(uo.z - iso.z) / 10.0})";
         }
