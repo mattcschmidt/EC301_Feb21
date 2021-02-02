@@ -1,0 +1,18 @@
+<Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock Text="Patient Info" FontWeight="Bold" FontSize="16"/>
+        <TextBlock Text="Name" Grid.Row="1" FontWeight="Bold" Margin="5"/>
+        <TextBlock Text="{Binding Name}" Grid.Row="1" Grid.Column="1" Margin="5"/>
+        <TextBlock Text="Date Of Birth" Grid.Row="2" FontWeight="Bold" Margin="5"/>
+        <TextBlock Text="{Binding DateOfBirth}" Grid.Row="2" Grid.Column="1" Margin="5"/>
+        <TextBlock Text="Hospital" Grid.Row="3" FontWeight="Bold" Margin="5"/>
+        <TextBlock Text="{Binding Hospital}" Grid.Row="3" Grid.Column="1" Margin="5"/>
