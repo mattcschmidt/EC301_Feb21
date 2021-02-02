@@ -1,0 +1,91 @@
+   <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <TextBlock Text="Field Properties" FontWeight="Bold" FontSize="16"/>
+        <TextBlock Text="ID" FontWeight="Bold" Grid.Row="1" Margin="2"/>
+        <TextBlock Text="{Binding FieldId}" Grid.Row="1" Grid.Column="1" Margin="2"/>
+        <TextBlock Text="Name" FontWeight="Bold" Grid.Row="1" Grid.Column="2" Margin="2"/>
+        <TextBlock Text="{Binding FieldName}" Grid.Row="1" Grid.Column="3" Margin="2"/>
+        <TextBlock Text="Technique" FontWeight="Bold" Grid.Row="2" Margin="2"/>
+        <TextBlock Text="{Binding Technique}" Grid.Row="2" Grid.Column="1" Margin="2"/>
+        <TextBlock Text="Energy" FontWeight="Bold" Grid.Row="2" Grid.Column="2" Margin="2"/>
+        <TextBlock Text="{Binding Energy}" Grid.Row="2" Grid.Column="3" Margin="2"/>
+        <TextBlock Text="Machine" FontWeight="Bold" Grid.Row="3" Margin="2"/>
+        <TextBlock Text="{Binding Machine}" Grid.Row="3" Grid.Column="1" Margin="2"/>
+        <TextBlock Text="Dose Rate" FontWeight="Bold" Grid.Row="3" Grid.Column="2" Margin="2"/>
+        <TextBlock Text="{Binding DoseRate}" Grid.Row="3" Grid.Column="3" Margin="2"/>
+        <TextBlock Text="Tolerance Table" FontWeight="Bold" Grid.Row="4" Margin="2"/>
+        <TextBlock Text="{Binding ToleranceTable}" Grid.Row="4" Grid.Column="1" Margin="2"/>
+        <TextBlock Text="MLC Plan Type" FontWeight="Bold" Grid.Row="4" Grid.Column="2" Margin="2"/>
+        <TextBlock Text="{Binding MLCPlanType}" Grid.Row="4" Grid.Column="3" Margin="2"/>
+        <TextBlock Text="Beam Geometry" Grid.Row="5" FontSize="16" FontWeight="Bold" Margin="5"/>
+        <Grid Grid.ColumnSpan="4" Grid.Row="6">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <TextBlock FontWeight="Bold" Text="Gantry Angle"/>
+            <TextBlock FontWeight="Bold" Text="Collimator Angle" Grid.Column="1"/>
+            <TextBlock FontWeight="Bold" Text="Couch Angle" Grid.Column="2"/>
+            <TextBlock FontWeight="Bold" Text="SSD [cm]" Grid.Column="3"/>
+            <TextBlock FontWeight="Bold" Text="Isocenter [cm]" Grid.Column="4"/>
+            <TextBlock FontWeight="Bold" Text="Field X [cm]" Grid.Column="5"/>
+            <TextBlock FontWeight="Bold" Text="Field Y [cm]" Grid.Column="6"/>
+            <TextBlock FontWeight="Bold" Text="MU" Grid.Column="7"/>
+            <TextBlock Text="{Binding Gantry}" Grid.Row="1"/>
+            <TextBlock Text="{Binding Collimator}" Grid.Row="1" Grid.Column="1"/>
+            <TextBlock Text="{Binding CouchAngle}" Grid.Row="1" Grid.Column="2"/>
+            <TextBlock Text="{Binding SSD}" Grid.Row="1" Grid.Column="3"/>
+            <TextBlock Text="{Binding Isocenter}" Grid.Row="1" Grid.Column="4"/>
+            <StackPanel Grid.Row="1" Grid.Column="5">
+                <TextBlock Text="{Binding FieldX}"/>
+                <TextBlock>
+                    <Run Text="X1: "/>
+                    <Run Text="{Binding X1}"/>
+                </TextBlock>
+                <TextBlock>
+                    <Run Text="X2: "/>
+                    <Run Text="{Binding X2}"/>
+                </TextBlock>
+            </StackPanel>
+            <StackPanel Grid.Row="1" Grid.Column="6">
+                <TextBlock Text="{Binding FieldY}"/>
+                <TextBlock>
+                    <Run Text="Y1: "/>
+                    <Run Text="{Binding Y1}"/>
+                </TextBlock>
+                <TextBlock>
+                    <Run Text="Y2: "/>
+                    <Run Text="{Binding Y2}"/>
+                </TextBlock>
+            </StackPanel>
+            <TextBlock Text="{Binding MU}" Grid.Row="1" Grid.Column="7"/>
+        </Grid>
+        <StackPanel Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="2">
+            <TextBlock Text="DRR" HorizontalAlignment="Center"/>
+            <Image  Source="{Binding DRR}" Width="200" Height="200"/>
+        </StackPanel>
+        
