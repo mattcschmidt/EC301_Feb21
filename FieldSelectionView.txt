@@ -1,0 +1,7 @@
+<ListView ItemsSource="{Binding Fields}" SelectedItem="{Binding SelectedField}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding FieldId}" Margin="5"/>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
