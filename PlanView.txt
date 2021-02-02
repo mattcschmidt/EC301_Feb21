@@ -1,0 +1,26 @@
+ <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock Text="Plan Info" FontWeight="Bold" FontSize="16"/>
+        <TextBlock Text="ID" FontWeight="Bold" Grid.Row="1" Margin="5"/>
+        <TextBlock Text="{Binding Id}" Margin="5" Grid.Column="1" Grid.Row="1"/>
+        <TextBlock Text="Name" FontWeight="Bold" Grid.Row="2" Margin="5"/>
+        <TextBlock Text="{Binding Name}" Margin="5" Grid.Column="1" Grid.Row="2"/>
+        <TextBlock Text="Course" FontWeight="Bold" Grid.Row="3" Margin="5"/>
+        <TextBlock Text="{Binding CourseId}" Margin="5" Grid.Column="1" Grid.Row="3"/>
+        <TextBlock Text="Approval Status" FontWeight="Bold" Grid.Row="4" Margin="5"/>
+        <TextBlock Text="{Binding ApprovalStatus}" Margin="5" Grid.Column="1" Grid.Row="4"/>
+        <TextBlock Text="Approver" FontWeight="Bold" Grid.Row="5" Margin="5"/>
+        <TextBlock Text="{Binding Approver}" Margin="5" Grid.Column="1" Grid.Row="5"/>
+        <TextBlock Text="Approval History" FontWeight="Bold" Grid.Row="6" Margin="5"/>
+        <TextBlock Text="{Binding ApprovalHistory}" Margin="5" Grid.Column="1" Grid.Row="6"/>
