@@ -32,9 +32,9 @@ public ObservableCollection<FieldModel> Fields { get; set; }
                     Isocenter = GetIsocenter(planSetup,field),
                     MU = field.Meterset.Value,
                     MLCPlanType = field.MLCPlanType.ToString(),
-                    SSD = field.SSD,//maybe for arcs average ssd would be the best.
+                    SSD = Math.Round(field.SSD/10.0,2),//maybe for arcs average ssd would be the best.
                     DoseRate = field.DoseRate,
-                    Gantry = GetGantry(field),
+                    Gantry = GetGantry(planSetup,field),
                     Collimator = field.CollimatorAngleToUser(field.ControlPoints.First().CollimatorAngle),
                     CouchAngle = field.PatientSupportAngleToUser(field.ControlPoints.First().PatientSupportAngle),
                     ToleranceTable = field.ToleranceTableLabel,
@@ -54,7 +54,7 @@ public ObservableCollection<FieldModel> Fields { get; set; }
             {
                 for(int ii = 0; ii < drr.XSize; ii++)
                 {
-                    flat_pixels[i + drr.XSize * ii] = pixels[ii,i];
+                    flat_pixels[i + drr.XSize * ii] = pixels[i,ii];
                 }
             }
             //translate into byte array
@@ -72,7 +72,7 @@ public ObservableCollection<FieldModel> Fields { get; set; }
             return BitmapSource.Create(drr.XSize, drr.YSize, 25.4 / drr.XRes, 25.4 / drr.YRes, format, null, image_bytes, stride);
         }
 
-        private string GetGantry(Beam field)
+        private string GetGantry(PlanSetup plan, Beam field)
         {
             if (field.Technique.Id.Contains("ARC"))
             {
@@ -85,5 +85,5 @@ public ObservableCollection<FieldModel> Fields { get; set; }
         {
             var uo = plan.StructureSet.Image.UserOrigin;
             var iso = field.IsocenterPosition;
-            return $"({(uo.x - iso.x) / 10.0}, {(uo.y - iso.y) / 10.0}, {(uo.z - iso.z) / 10.0})";
+            return $"({(uo.x - iso.x) / 10.0:F1}, {(uo.y - iso.y) / 10.0:F1}, {(uo.z - iso.z) / 10.0:F1})";
         }
