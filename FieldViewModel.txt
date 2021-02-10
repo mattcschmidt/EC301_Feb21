@@ -85,5 +85,5 @@ public ObservableCollection<FieldModel> Fields { get; set; }
         {
             var uo = plan.StructureSet.Image.UserOrigin;
             var iso = field.IsocenterPosition;
-            return $"({(uo.x - iso.x) / 10.0:F1}, {(uo.y - iso.y) / 10.0:F1}, {(uo.z - iso.z) / 10.0:F1})";
+            return $"({(iso.x - uo.x) / 10.0:F1}, {(iso.y - uo.y) / 10.0:F1}, {(iso.z - uo.z) / 10.0:F1})";
         }
