@@ -45,6 +45,7 @@ public ObservableCollection<FieldModel> Fields { get; set; }
 
         private BitmapSource BuildDRRImage(Beam field)
         {
+            if(field.ReferenceImage == null){ return null;}
             var drr = field.ReferenceImage;
             int[,] pixels = new int[drr.YSize, drr.XSize];
             drr.GetVoxels(0,pixels);//get image pixels out of ESAPI.
