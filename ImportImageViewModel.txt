@@ -1,0 +1,37 @@
+private string _imageCaption;
+
+        public string ImageComment
+        {
+            get { return _imageCaption; }
+            set { SetProperty(ref _imageCaption, value); }
+        }
+        public DelegateCommand SelectImageCommand { get; private set; }
+        public ObservableCollection<ImageDetails> Images { get; private set; }
+        public DelegateCommand ClearImageCommand { get; private set; }
+        public ImportImageViewModel()
+        {
+            Images = new ObservableCollection<ImageDetails>();
+            SelectImageCommand = new DelegateCommand(OnSetImage);
+            ClearImageCommand = new DelegateCommand(OnClearImages);
+        }
+
+        private void OnClearImages()
+        {
+            Images.Clear();
+        }
+
+        private void OnSetImage()
+        {
+            var ofd = new OpenFileDialog();
+            ofd.Filter = "PNG (*.png)|*png|JPG (*.jpg)|*.jpg";
+            if(ofd.ShowDialog() == true)
+            {
+                Images.Add(new ImageDetails { Caption = ImageComment, FileName = ofd.FileName });
+            }
+        }
+    }
+    public class ImageDetails
+    {
+        public string Caption { get; set; }
+        public string FileName { get; set; }
+    }

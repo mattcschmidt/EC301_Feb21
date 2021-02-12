@@ -1,0 +1,25 @@
+      <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+            <TextBlock Text="Caption:" FontWeight="Bold"/>
+            <TextBox Text="{Binding ImageComment}" Margin="5" Width="250"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="1">
+            <TextBlock Text="Select Image:" FontWeight="Bold" Margin="5"/>
+            <Button Content="..." Command="{Binding SelectImageCommand}" Width="50" Background="CadetBlue" Margin="5"/>
+        </StackPanel>
+        <Button Width="100" Content="Clear Images" Background="CadetBlue" Command="{Binding ClearImageCommand}" Grid.Row="2" Margin="5"/>
+        <ItemsControl ItemsSource="{Binding Images}" Grid.Row="3">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding Caption}" Margin="5"/>
+                        <TextBlock Text="{Binding FileName}" Margin="5"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
