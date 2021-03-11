@@ -1,0 +1,27 @@
+ FlowDocument fd = new FlowDocument { FontSize = 12, FontFamily = new System.Windows.Media.FontFamily("Franklin Gothic") };
+            fd.Blocks.Add(new Paragraph(new Run("Treatment Plan Report")));
+            fd.Blocks.Add(new BlockUIContainer(new PatientView { DataContext = PatientViewModel.PatientInfo }));
+            fd.Blocks.Add(new BlockUIContainer(new PlanView { DataContext = PlanViewModel.PlanInfo }));
+            foreach(var field in FieldViewModel.Fields)
+            {
+                fd.Blocks.Add(new BlockUIContainer(new FieldDetailsView { DataContext = field }));
+            }
+            BitmapSource bmp = new PngExporter().ExportToBitmap(DVHViewModel.DVHPlotModel);
+            fd.Blocks.Add(new BlockUIContainer(new System.Windows.Controls.Image
+            {
+                Source = bmp,
+                Height = 600,
+                Width = 725
+            }));
+            System.Windows.Controls.PrintDialog printer = new System.Windows.Controls.PrintDialog();
+            //printer.PrintTicket.PageOrientation = System.Printing.PageOrientation.Landscape;
+            fd.PageHeight = 1056;
+            fd.PageWidth = 816;
+            fd.PagePadding = new System.Windows.Thickness(50);
+            fd.ColumnGap = 0;
+            fd.ColumnWidth = 816;
+            IDocumentPaginatorSource source = fd;
+            if(printer.ShowDialog() == true)
+            {
+                printer.PrintDocument(source.DocumentPaginator, "TreatmentPlanReport");
+            }
