@@ -1,0 +1,48 @@
+//calculate image path from shift
+            var shift = value as PatientShiftModel;
+            switch (shift.ShiftDirection)
+            {
+                //go through shift directions
+                case ShiftDirectionEnum.XDir:
+                    if (Math.Abs(shift.Magnitude) < 0.01) 
+                    { 
+                        return null; 
+                    }
+                    else if (shift.Magnitude < 0.0)
+                    {
+                        //get executing assembly path and couch direction from magnitude.
+                        return Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Resources", "CouchLeft.jfif");
+                    }
+                    else
+                    {
+                        return Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Resources", "CouchRight.jfif");
+                    }
+                case ShiftDirectionEnum.YDir:
+                    if (Math.Abs(shift.Magnitude) < 0.01)
+                    {
+                        return null;
+                    }
+                    else if (shift.Magnitude < 0.0)
+                    {
+                        return Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Resources", "CouchDown.jfif");
+                    }
+                    else
+                    {
+                        return Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Resources", "CouchUp.jfif");
+                    }
+                case ShiftDirectionEnum.ZDir:
+                    if (Math.Abs(shift.Magnitude) < 0.01)
+                    {
+                        return null;
+                    }
+                    else if (shift.Magnitude < 0.0)
+                    {
+                        return Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Resources", "CouchOut.jfif");
+                    }
+                    else
+                    {
+                        return Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Resources", "CouchIn.jfif");
+                    }
+                default:
+                    return null;
+            }

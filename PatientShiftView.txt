@@ -1,0 +1,17 @@
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel>
+            <TextBlock FontWeight="Bold" HorizontalAlignment="Center" Text="{Binding XShift.ShiftText}"/>
+            <Image Width="100" Height="100" Source="{Binding XShift, Converter={StaticResource localShiftConverter}}"/>
+        </StackPanel>
+        <StackPanel Grid.Column="1">
+            <TextBlock FontWeight="Bold" HorizontalAlignment="Center" Text="{Binding YShift.ShiftText}"/>
+            <Image Width="100" Height="100" Source="{Binding YShift, Converter={StaticResource localShiftConverter}}"/>
+        </StackPanel>
+        <StackPanel Grid.Column="2">
+            <TextBlock FontWeight="Bold" HorizontalAlignment="Center" Text="{Binding ZShift.ShiftText}"/>
+            <Image Width="100" Height="100" Source="{Binding ZShift, Converter={StaticResource localShiftConverter}}"/>
+        </StackPanel>

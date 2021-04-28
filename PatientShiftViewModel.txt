@@ -1,0 +1,60 @@
+        private PatientShiftModel _xShift;
+
+        public PatientShiftModel XShift
+        {
+            get { return _xShift; }
+            set { SetProperty(ref _xShift, value); }
+        }
+        private PatientShiftModel _yShift;
+
+        public PatientShiftModel YShift
+        {
+            get { return _yShift; }
+            set { SetProperty(ref _yShift, value); }
+        }
+        private PatientShiftModel _zShift;
+        private PlanSetup _plan;
+
+        public PatientShiftModel ZShift
+        {
+            get { return _zShift; }
+            set { SetProperty(ref _zShift, value); }
+        }
+        public PatientShiftViewModel(PlanSetup plan)
+        {
+            _plan = plan;
+            GetCouchShifts();
+        }
+
+        private void GetCouchShifts()
+        {
+            Beam b1 = _plan.Beams.Where(x => !x.IsSetupField).OrderBy(x => x.BeamNumber).FirstOrDefault();
+            var uo = _plan.StructureSet.Image.UserOrigin;
+            if (b1 != null)
+            {
+                double x = (uo.x - b1.IsocenterPosition.x) / 10.0;
+                double y = -(uo.y - b1.IsocenterPosition.y) / 10.0;
+                double z = (uo.z - b1.IsocenterPosition.z) / 10.0;
+                XShift = new PatientShiftModel
+                {
+                    Magnitude = x,
+                    ShiftDirection = ShiftDirectionEnum.XDir,
+                    ShiftText = Math.Abs(x) < 0.01 ? "No Shift" :
+                    x < 0 ? $"Left: {Math.Abs(x):F2}" : $"Right: {Math.Abs(x):F2}"
+                };
+                YShift = new PatientShiftModel
+                {
+                    Magnitude = y,
+                    ShiftDirection = ShiftDirectionEnum.YDir,
+                    ShiftText = Math.Abs(y) < 0.01 ? "No Shift" :
+                    y < 0 ? $"Down: {Math.Abs(y):F2}" : $"Up: {Math.Abs(y):F2}"
+                };
+                ZShift = new PatientShiftModel
+                {
+                    Magnitude = z,
+                    ShiftDirection = ShiftDirectionEnum.ZDir,
+                    ShiftText = Math.Abs(z) < 0.01 ? "No Shift" :
+                    z < 0 ? $"Out: {Math.Abs(z):F2}" : $"In: {Math.Abs(z):F2}"
+                };
+            }
+        }

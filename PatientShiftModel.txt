@@ -1,0 +1,3 @@
+ public double Magnitude { get; set; }
+        public ShiftDirectionEnum ShiftDirection { get; set; }
+        public string ShiftText { get; set; }
