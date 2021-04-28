@@ -4,7 +4,7 @@
             {
                 var BinaryContent = File.ReadAllBytes(file.FileName);
 
-                CustomInsertDocumentsParameter.PostDocumentData("US-EC-020", _user,
+                CustomInsertDocumentsParameter.PostDocumentData(_patient.Id, _user,
                     BinaryContent, "Plan Report",
                     new VMS.OIS.ARIALocal.WebServices.Document.Contracts.DocumentType { DocumentTypeDescription = "Consent" });
             }
