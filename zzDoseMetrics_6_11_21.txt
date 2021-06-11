@@ -1,0 +1,91 @@
+public class DoseMetricModel
+    {
+        public MetricTypeEnum MetricType { get; set; }
+        public double DoseValue { get; set; }
+        public DoseValuePresentation DoseUnit{ get; set; }
+        public double VolumeValue { get; set; }
+        public VolumePresentation VolumeUnit { get; set; }
+        public CompareEnum Operator { get; set; }
+        public double Tolerance { get; set; }
+        public bool Pass { get; set; }
+        public string StructureId { get; set; }
+        public DoseMetricModel(string metricText)
+        {
+            StructureId = GetStructureFromText(metricText);
+            MetricType = GetMetricFromText(metricText);
+            ParseMetric(metricText);
+        }
+
+        public void ParseMetric(string metricText)
+        {
+            switch (metricText.Split('|').Last().ElementAt(0))
+            {
+                case '<':
+                    Operator = CompareEnum.LessThan;
+                    break;
+                case '>':
+                    Operator = CompareEnum.GreaterThan;
+                    break;
+                case '=':
+                    Operator = CompareEnum.Equal;
+                    break;
+                default:
+                    throw new ArgumentException("Bad Operator");
+            }
+            string metric = metricText.Split('|').ElementAt(1);
+            int unitChar = 0;
+            if (metric.Split('[').First().Contains('c'))
+            {
+                unitChar = metric.IndexOf('c');
+            }
+            else if (metric.Split('[').First().Contains('%'))
+            {
+                unitChar = metric.IndexOf('%');
+            }
+            else { unitChar = metric.IndexOf('G'); }
+            if(MetricType == MetricTypeEnum.DoseAtVolume)
+            {
+                VolumeValue = Convert.ToDouble(metric.Substring(1, unitChar - 1));
+                VolumeUnit = metric.Split('[').First().Contains('%') ? VolumePresentation.Relative : VolumePresentation.AbsoluteCm3;
+                DoseUnit = metric.Split('[').Last().Contains('%') ? DoseValuePresentation.Relative : DoseValuePresentation.Absolute;
+            }
+            else if(MetricType== MetricTypeEnum.VolumeAtDose)
+            {
+                DoseValue = Convert.ToDouble(metric.Substring(1, unitChar - 1));
+                DoseUnit = metric.Split('[').First().Contains('%')? DoseValuePresentation.Relative : DoseValuePresentation.Absolute;
+                VolumeUnit = metric.Split('[').Last().Contains('%')? VolumePresentation.Relative : VolumePresentation.AbsoluteCm3;
+            }
+            Tolerance = Convert.ToDouble(metricText.Split('|').Last().Substring(1));
+        }
+
+        public MetricTypeEnum GetMetricFromText(string metricText)
+        {
+            switch (metricText.Split('|').ElementAt(1))
+            {
+                case "D":
+                    return MetricTypeEnum.DoseAtVolume;
+                case "V":
+                    return MetricTypeEnum.VolumeAtDose;
+                default:
+                    throw new ArgumentException("Invalid Metric Type");
+            }
+        }
+
+        public string GetStructureFromText(string metricText)
+        {
+            return metricText.Split('|').First();
+        }
+        public void EvaluateMetric(PlanSetup planSetup,Structure structure)
+        {
+            //only evaluates in cGy (units of the system).
+            var dvh = planSetup.GetDVHCumulativeData(structure, DoseUnit, VolumeUnit, 1);
+            if(MetricType == MetricTypeEnum.DoseAtVolume)
+            {
+                DoseValue = dvh.CurveData.FirstOrDefault(x => x.Volume < VolumeValue).DoseValue.Dose;
+            }
+            else if( MetricType == MetricTypeEnum.VolumeAtDose)
+            {
+                VolumeValue = dvh.CurveData.Last(x => x.DoseValue.Dose < DoseValue).Volume;
+            }
+        }
+    }
