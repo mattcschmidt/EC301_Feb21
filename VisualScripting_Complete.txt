@@ -1,0 +1,136 @@
+public IEnumerable<Metric> Execute(PlanSetup ps)
+        {
+            // TODO: Add your code here.
+            ValidatePlanSetup(ps);
+
+            ValidatePlanDose(ps);
+            ValidateStructureSet(ps);
+            //2. is the rx valid?
+            ValidatePrescription(ps);
+            //3. relevant structures present and not empty.
+            Structure body = ps.StructureSet.Structures.SingleOrDefault(x => x.Id.Equals("BODY", StringComparison.OrdinalIgnoreCase));
+            Structure ptv = ps.StructureSet.Structures.SingleOrDefault(x => x.Id.Equals("PTV", StringComparison.OrdinalIgnoreCase));
+            Structure ring = ps.StructureSet.Structures.SingleOrDefault(x => x.Id.Equals("2CMRINGFROMPTV", StringComparison.OrdinalIgnoreCase));
+            Structure lungs = ps.StructureSet.Structures.SingleOrDefault(x => x.Id.Equals("LUNGS-GTV", StringComparison.OrdinalIgnoreCase));
+            List<Structure> structures = new List<Structure> { body, ptv, ring, lungs };
+            ValidateStructure(structures);
+            //4. calculate metrics
+            Metric cI = new Metric("Conformity Index");
+            Metric gI = new Metric("Gradient Index");
+            Metric v20 = new Metric("V20");
+            if (ptv.Volume < 20)
+            {
+                cI.Tolerance = 1.25;
+                cI.MinorDeviation = 1.40;
+                gI.Tolerance = 12;
+                gI.MinorDeviation = 14;
+                v20.Tolerance = 5;
+                v20.Tolerance = 8;
+            }
+            else if (ptv.Volume <= 40)
+            {
+                cI.Tolerance = 1.15;
+                cI.MinorDeviation = 1.25;
+                gI.Tolerance = 9;
+                gI.MinorDeviation = 11;
+                v20.Tolerance = 6;
+                v20.Tolerance = 10;
+            }
+            else
+            {
+                //update these.
+                cI.Tolerance = 1.25;
+                cI.MinorDeviation = 1.40;
+                gI.Tolerance = 12;
+                gI.MinorDeviation = 14;
+                v20.Tolerance = 5;
+                v20.Tolerance = 8;
+            }
+            //calculate values. 
+            DoseValue pX = ps.TotalDose;
+            double v100 = ps.GetVolumeAtDose(body, pX, VolumePresentation.AbsoluteCm3);
+            cI.Value = v100 / ptv.Volume;
+
+            DoseValue halfPx = new DoseValue(pX.Dose / 2, pX.Unit);
+            double v50 = ps.GetVolumeAtDose(body,halfPx, VolumePresentation.AbsoluteCm3);
+            gI.Value = v50 / ptv.Volume;
+
+            DoseValue twentyGy = new DoseValue(2000, DoseValue.DoseUnit.cGy);
+            v20.Value = ps.GetVolumeAtDose(lungs, twentyGy, VolumePresentation.AbsoluteCm3);
+
+            List<Metric> metrics = new List<Metric>()
+            {
+                cI,
+                gI,
+                v20
+            };
+            foreach(var metric in metrics)
+            {
+                metric.Evaluate();
+            }
+            return metrics;
+        }
+
+        private void ValidateStructure(List<Structure> structures)
+        {
+            //TODO
+        }
+
+        private void ValidatePrescription(PlanSetup ps)
+        {
+            DoseValue fiftyFourGy = new DoseValue(5400, DoseValue.DoseUnit.cGy);
+            DoseValue sixtyGy = new DoseValue(6000, DoseValue.DoseUnit.cGy);
+            DoseValue fiftyFiveGy = new DoseValue(5500, DoseValue.DoseUnit.cGy);
+            DoseValue fiftyGy = new DoseValue(5000, DoseValue.DoseUnit.cGy);
+            DoseValue pX = ps.TotalDose;
+            int? n = ps.NumberOfFractions;
+            if(n == null)
+            {
+                throw new ApplicationException("No fractions found");
+            }
+            bool valid = false;
+            if(pX == fiftyFourGy && n.Value == 3)
+            {
+                valid = true;
+            }
+            else if (pX == sixtyGy && n.Value == 5)
+            {
+                valid = true;
+            }
+            else if (pX == fiftyFiveGy && n.Value == 5)
+            {
+                valid = true;
+            }
+            else if (pX == fiftyGy && n.Value == 8)
+            {
+                valid = true;
+            }
+            if (!valid)
+            {
+                throw new ApplicationException("Invalid dose and fractionation");
+            }
+        }
+
+        private void ValidateStructureSet(PlanSetup ps)
+        {
+            if(ps.StructureSet == null)
+            {
+                throw new ApplicationException("Structure set is null");
+            }
+        }
+
+        private void ValidatePlanDose(PlanSetup ps)
+        {
+            if (!ps.IsDoseValid)
+            {
+                throw new ApplicationException("Dose is not valid");
+            }
+        }
+
+        private void ValidatePlanSetup(PlanSetup ps)
+        {
+            if(ps == null)
+            {
+                throw new ApplicationException("Plan is not valid");
+            }
+        }
