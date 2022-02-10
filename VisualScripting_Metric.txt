@@ -1,0 +1,24 @@
+public string Name { get; set; }
+        public double Value { get; set; }
+        public double Tolerance { get; set; }
+        public double MinorDeviation { get; set; }
+        public string Result { get; set; }
+        public Metric(string name)
+        {
+            Name = name;
+        }
+        public void Evaluate()
+        {
+            if (Value < Tolerance)
+            {
+                Result = "pass";
+            }
+            else if(Value < MinorDeviation)
+            {
+                Result = "Pass with condition";
+            }
+            else
+            {
+                Result = "Failed";
+            }
+        }
