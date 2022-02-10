@@ -1,0 +1,71 @@
+ public PlanSetup Execute(PlanSetup ps)
+        {
+            // TODO: Add your code here.
+            ValidatePlanSetup(ps);
+
+            ValidatePlanDose(ps);
+            ValidateStructureSet(ps);
+            //2. is the rx valid?
+            ValidatePrescription(ps);
+
+            return null;
+        }
+
+        private void ValidatePrescription(PlanSetup ps)
+        {
+            DoseValue fiftyFourGy = new DoseValue(5400, DoseValue.DoseUnit.cGy);
+            DoseValue sixtyGy = new DoseValue(6000, DoseValue.DoseUnit.cGy);
+            DoseValue fiftyFiveGy = new DoseValue(5500, DoseValue.DoseUnit.cGy);
+            DoseValue fiftyGy = new DoseValue(5000, DoseValue.DoseUnit.cGy);
+            DoseValue pX = ps.TotalDose;
+            int? n = ps.NumberOfFractions;
+            if(n == null)
+            {
+                throw new ApplicationException("No fractions found");
+            }
+            bool valid = false;
+            if(pX == fiftyFourGy && n.Value == 3)
+            {
+                valid = true;
+            }
+            else if (pX == sixtyGy && n.Value == 5)
+            {
+                valid = true;
+            }
+            else if (pX == fiftyFiveGy && n.Value == 5)
+            {
+                valid = true;
+            }
+            else if (pX == fiftyGy && n.Value == 8)
+            {
+                valid = true;
+            }
+            if (!valid)
+            {
+                throw new ApplicationException("Invalid dose and fractionation");
+            }
+        }
+
+        private void ValidateStructureSet(PlanSetup ps)
+        {
+            if(ps.StructureSet == null)
+            {
+                throw new ApplicationException("Structure set is null");
+            }
+        }
+
+        private void ValidatePlanDose(PlanSetup ps)
+        {
+            if (!ps.IsDoseValid)
+            {
+                throw new ApplicationException("Dose is not valid");
+            }
+        }
+
+        private void ValidatePlanSetup(PlanSetup ps)
+        {
+            if(ps == null)
+            {
+                throw new ApplicationException("Plan is not valid");
+            }
+        }
