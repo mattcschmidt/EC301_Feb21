@@ -1,0 +1,8 @@
+SELECT c.CourseId, ps.PlanSetupId, rh.TreatmentEndTime, efch.ActualMeterset, efch.NominalEnergy
+FROM dbo.ExternalFieldCommonHstry as efch
+JOIN dbo.RadiationHstry as rh ON efch.RadiationHstrySer = rh.RadiationHstrySer
+JOIN dbo.Radiation as r ON r.RadiationSer = rh.RadiationSer
+JOIN dbo.PlanSetup as ps ON ps.PlanSetupSer = r.PlanSetupSer
+JOIN dbo.Course as c ON c.CourseSer = ps.CourseSer
+JOIN dbo.Patient as p ON p.PatientSer = c.PatientSer
+WHERE p.PatientId = 'US-STT 4656468'
