@@ -1,0 +1,99 @@
+private string _patientID;
+
+        public string PatientId
+        {
+            get { return _patientID; }
+            set { SetProperty(ref _patientID,value); }
+        }
+        private PDPlanSetup _selectedPlan;
+
+        public PDPlanSetup SelectedPlan
+        {
+            get { return _selectedPlan; }
+            set 
+            { 
+                SetProperty(ref _selectedPlan,value);
+                if (SelectedPlan != null)
+                {
+                    Fields.Clear();
+                    foreach(var beam in SelectedPlan.Beams)
+                    {
+                        Fields.Add(beam);
+                    }
+                }
+            }
+        }
+        private PDBeam _selectedField;
+
+        public PDBeam SelectedField
+        {
+            get { return _selectedField; }
+            set 
+            { 
+                SetProperty(ref _selectedField,value);
+                if (SelectedField != null)
+                {
+                    CalculateFieldSize();
+                }
+            }
+        }
+
+       
+
+        private string _fieldSize;
+        private Application _app;
+
+        public string FieldSize
+        {
+            get { return _fieldSize; }
+            set {SetProperty(ref _fieldSize,value); }
+        }
+        public ObservableCollection<PDPlanSetup> Plans { get; private set; }
+        public ObservableCollection<PDBeam> Fields { get; private set; }
+        public PlotModel ProfilePlotModel { get; set; }
+        public DelegateCommand OpenPatientCommand { get; private set; }
+        public MainViewModel(Application app)
+        {
+            _app = app;
+            Plans = new ObservableCollection<PDPlanSetup>();
+            Fields = new ObservableCollection<PDBeam>();
+            OpenPatientCommand = new DelegateCommand(OnOpenPatient);
+            ProfilePlotModel = new PlotModel()
+            {
+                Title = "PD Profile"
+            };
+        }
+
+        private void OnOpenPatient()
+        {
+            Patient patient = _app.OpenPatientById(PatientId);
+            if (patient != null)
+            {
+                Plans.Clear();
+                foreach (var plan in patient.PDPlanSetups)
+                {
+                    Plans.Add(plan);
+                }
+            }
+        }
+        private void CalculateFieldSize()
+        {
+            var image = SelectedField.PortalDoseImages.First();//get first portal image.
+            var frame = image.Image.FramesRT.First();//PD images only have one framme.
+            var profile = frame.GetImageProfile(
+                new VMS.CA.Scripting.VVector(0, frame.YSize / 2.0, 0),
+                new VMS.CA.Scripting.VVector(frame.XSize, frame.YSize / 2.0, 0),
+                new double[frame.XSize + 1]);
+            ProfilePlotModel.Series.Clear();
+            var series = new LineSeries();
+            foreach(var point in profile)
+            {
+                series.Points.Add(new DataPoint(point.Position.x, point.Value));
+            }
+            ProfilePlotModel.Series.Add(series);
+            ProfilePlotModel.InvalidatePlot(true);//notifypropertychanged of a series.
+            var center = profile.FirstOrDefault(p => p.Position.x >= frame.XSize / 2.0).Value;
+            var first50 = profile.FirstOrDefault(p => p.Value >= center).Position.x;
+            var last50 = profile.LastOrDefault(p => p.Value >= center).Position.x;
+            FieldSize = $"{(last50 - first50) / (frame.XRes * 10.0):F3}";
+        }

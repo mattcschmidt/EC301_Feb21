@@ -31,10 +31,14 @@
                 </ListView.ItemTemplate>
             </ListView>
         </StackPanel>
-        <StackPanel Grid.Row="1" Grid.Column="2">
+        <Grid Grid.Row="1" Grid.Column="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
             <TextBlock>
                 <Run Text="Calculated Field Size: "/>
                 <Run Text="{Binding FieldSize}"/>
             </TextBlock>
-            <oxy:PlotView Model="{Binding ProfilePlotModel}"/>
-        </StackPanel>
+            <oxy:PlotView Model="{Binding ProfilePlotModel}" Grid.Row="1"/>
+        </Grid>
