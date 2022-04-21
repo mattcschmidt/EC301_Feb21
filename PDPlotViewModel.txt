@@ -93,7 +93,7 @@ private string _patientID;
             ProfilePlotModel.Series.Add(series);
             ProfilePlotModel.InvalidatePlot(true);//notifypropertychanged of a series.
             var center = profile.FirstOrDefault(p => p.Position.x >= frame.XSize / 2.0).Value;
-            var first50 = profile.FirstOrDefault(p => p.Value >= center).Position.x;
-            var last50 = profile.LastOrDefault(p => p.Value >= center).Position.x;
+            var first50 = profile.FirstOrDefault(p => p.Value >= center*0.50).Position.x;
+            var last50 = profile.LastOrDefault(p => p.Value >= center*0.50).Position.x;
             FieldSize = $"{(last50 - first50) / (frame.XRes * 10.0):F3}";
         }
