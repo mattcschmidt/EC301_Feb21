@@ -1,0 +1,40 @@
+<Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel>
+            <TextBox Text="{Binding PatientId}" Margin="5"/>
+            <Button Command="{Binding OpenPatientCommand}" Content="Open Patient" Margin="5"/>
+        </StackPanel>
+        <StackPanel Grid.Row="1">
+            <TextBlock Text="Plans:" FontWeight="Bold" HorizontalAlignment="Center" Margin="5"/>
+            <ListView ItemsSource="{Binding Plans}" SelectedItem="{Binding SelectedPlan}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Id}" Padding="2"/>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackPanel>
+        <StackPanel Grid.Row="1" Grid.Column="1">
+            <TextBlock Text="Fields:" FontWeight="Bold" HorizontalAlignment="Center" Margin="5"/>
+            <ListView ItemsSource="{Binding Fields}" SelectedItem="{Binding SelectedField}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Id}" Padding="2"/>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackPanel>
+        <StackPanel Grid.Row="1" Grid.Column="2">
+            <TextBlock>
+                <Run Text="Calculated Field Size: "/>
+                <Run Text="{Binding FieldSize}"/>
+            </TextBlock>
+            <oxy:PlotView Model="{Binding ProfilePlotModel}"/>
+        </StackPanel>
