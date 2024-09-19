@@ -9,7 +9,7 @@ public PlanModel PlanInfo{ get; set; }
                 ApprovalStatus = planSetup.ApprovalStatus.ToString(),
                 Approver = planSetup.ApprovalHistory.OrderBy(x=>x.ApprovalDateTime).Last().UserDisplayName,
                 ApprovalHistory = String.Join("\n", planSetup.ApprovalHistory
-                .Select(x => new { s = $"{x.ApprovalStatus} -  {x.ApprovalDateTime} by {x.UserId}" }).Select(x => x.s))
+                .Select(x => $"{x.ApprovalStatus} -  {x.ApprovalDateTime} by {x.UserId}" }))
             };
-            //select statement has an anonymous type inside that is the approval status, dat and user. 
+             
         }
